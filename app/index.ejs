@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.3.21/plyr.css">
+  <title>App</title>
+</head>
+<body>
+    <% if(env === 'production'){ %>
+        <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+        {{{DATA HERE}}}
+      <% } else{ %>  
+        <script>
+            // Data
+            window.__CLIPY_DATA__ = {
+                "videos": [
+                    {
+                        "title": "01-video-example.mp4",
+                        "src": "./01-video-example.mp4"
+                    },
+                    {
+                        "title": "02-video-example.mp4",
+                        "src": "./02-video-example.mp4"
+                    }
+                ],
+                "coverImage": "./cover.png"
+            }
+        </script>
+     <% } %>
+  <div id="app"></div>
+</body>
+</html>

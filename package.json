@@ -1,0 +1,32 @@
+{
+  "name": "clipy-cli",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Gerardo Gallegos <puxerop@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "file-extension": "^4.0.5",
+    "inquirer": "^6.2.2",
+    "mkdirp": "^0.5.1",
+    "shelljs": "^0.8.3"
+  },
+  "bin": {
+    "clipy": "./index.js"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GerardoGallegos/clipy-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GerardoGallegos/clipy-cli/issues"
+  },
+  "homepage": "https://github.com/GerardoGallegos/clipy-cli#readme",
+  "description": "CLI tool"
+}

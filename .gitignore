@@ -1,0 +1,9 @@
+
+# CLI dependencies
+node_modules
+
+# React App dependencies
+app/node_modules
+
+# dist app
+app/dist/*
