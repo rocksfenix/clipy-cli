@@ -30,7 +30,7 @@ const run = () => {
       }
     })
 
-    const stringData = `<script>window.__CLIPY_DATA__ =${JSON.stringify(DATA, null, 4)}</script>`
+    const stringData = `<script>window.__CLIPY_DATA__ =${JSON.stringify(DATA)}</script>`
     const outdir = path.resolve(__dirname, 'app', 'dist', 'index.html')
     const outFile = path.resolve(proyectPath, 'play.html')
   

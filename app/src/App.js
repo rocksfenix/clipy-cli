@@ -1,54 +1,28 @@
 import React from 'react'
 import Plyr from 'plyr'
-import styled from 'styled-components'
-
-const DATA = window.__CLIPY_DATA__ || { videos: [] }
-
-const VideoItem = styled.li`
-  list-style: none;
-  cursor: pointer;
-  padding: 0.3em;
-  font-size: 22px;
-  background: ${p => p.active ? '#b07de3' : '#FFF'};
-  transition: all 250ms ease-out;
-  border-radius: 0.3em;
-
-  :hover {
-    background: yellow;
-  }
-`
-
-const CoverImage = styled.img`
-  width: 80px;
-`
-
-const Info = styled.div`
-  width: 100%;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  font-weight: bold;
-`
+import { getItem, setItem } from './util/localstorage'
+import DATA from './util/getMetaData'
+import VideoItem from './components/VideoItem'
+import CoverImage from './components/CoverImage'
+import Info from './components/Info'
 
 class App extends React.Component {
 
   state = {
-    videoInFocus: {
-      title: 'Select the video'
-    }
+    title: DATA.title,
+    coverImage: DATA.coverImage,
+    videos: DATA.videos,
+    videoInFocus: DATA.videos[0],
+    activeIndex: 0
   }
+
+  video = React.createRef()
 
   componentDidMount () {
-    this.player = new Plyr(document.getElementById('player'))
-    this.htmlEl = document.getElementsByTagName('html')[0]
-  }
-
-  selectVideo = (videoInFocus) => {
-    this.setState({ videoInFocus })
-    this.player.source = {
+    const { videoInFocus } = this.state
+    const source = {
       type: 'video',
+      title: videoInFocus.title,
       sources: [
         {
           src: videoInFocus.src,
@@ -58,26 +32,133 @@ class App extends React.Component {
       ]
     }
 
-    this.htmlEl.scrollTop = 0
+    this.player = new Plyr(this.video.current)
+    this.player.autoplay = true
+    this.player.source = source
+    this.player.on('ended', this.handleEnded)
+    this.htmlEl = document.getElementsByTagName('html')[0]
+  }
+
+  handleEnded = (e) => {
+    this.setState(state => {
+      const activeIndex = state.activeIndex + 1
+      const cache = getItem(state.title)
+
+      if (activeIndex === state.videos.length) {
+        return alert('Completed the playlist!')
+      }
+
+      setItem(state.title, {
+        ...cache,
+        completed: [
+          ...cache.completed,
+          state.videoInFocus.title
+        ]
+      })
+  
+      return {
+        ...state,
+        activeIndex: activeIndex,
+        videoInFocus: state.videos[activeIndex],
+        videos: state.videos.map(video => {
+          if (video.title === state.videoInFocus.title) {
+            return {
+              ...video,
+              completed: true
+            }
+          }
+          return video
+        })
+      }
+    }, this.updateVideoPlayer)
+  }
+
+  updateVideoPlayer = () => {
+    this.player.source = {
+      type: 'video',
+      title: this.state.videoInFocus.title,
+      sources: [
+        {
+          src: this.state.videoInFocus.src,
+          type: 'video/mp4',
+          size: 720
+        }
+      ]
+    }
+  }
+
+  selectVideo = (videoInFocus, activeIndex) => {
+    this.setState({
+      videoInFocus, activeIndex
+    }, this.updateVideoPlayer)
+  
+    // TODO: handle scroll behavior via checkbox
+    // this.htmlEl.scrollTop = 0
+  }
+
+  toggleCompleted = (touchedVideo, index, event) => {
+    event.preventDefault()
+
+    this.setState(state => {
+      // I get the cache from localstorage
+      const cache = getItem(state.title)
+      const videoTitle = touchedVideo.title
+
+      // Update the cache in localStorage
+      if (cache) {
+        if (cache.completed.indexOf(videoTitle) !== -1) {
+          // Remove if exist
+          setItem(state.title, {
+            ...cache,
+            completed: cache.completed.filter(c => c !== videoTitle)
+          })
+        } else {
+          // Push if do not exist
+          setItem(state.title, {
+            ...cache,
+            completed: [
+              ... cache.completed, videoTitle
+            ]
+          })
+        }
+      }
+
+      const newStatus = !touchedVideo.completed
+  
+      return {
+        ...state,
+        videos: state.videos.map(video => {
+          if (video.title === videoTitle) {
+            return {
+              ...video,
+              completed: newStatus
+            }
+          }
+          return video
+        })
+      }
+    })
   }
 
   render () {
-    const { videoInFocus } = this.state
+    const { videoInFocus, videos, coverImage, title } = this.state
     return (
       <div>
-        <video id='player'>
+        <video ref={this.video}>
           <source type='video/mp4' />
         </video>
         <Info>
-          <CoverImage src={DATA.coverImage}/>
-          <div>{ DATA.title }</div> > 
+          <CoverImage src={coverImage}/>
+          <div>{ title }</div> > 
           <div>{ videoInFocus.title }</div>
         </Info>
         <ul>
-          { DATA.videos.map(video => (
+          { videos.map((video, index) => (
             <VideoItem
-              onClick={this.selectVideo.bind(this, video)}
+              onClick={this.selectVideo.bind(this, video, index)}
+              onContextMenu={this.toggleCompleted.bind(this, video, index)}
               active={videoInFocus.title === video.title}
+              completed={video.completed}
               key={video.title}
             >
               { video.title }
