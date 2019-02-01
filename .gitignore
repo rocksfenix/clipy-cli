@@ -6,4 +6,4 @@ node_modules
 app/node_modules
 
 # dist app
-app/dist/*
+app/dist

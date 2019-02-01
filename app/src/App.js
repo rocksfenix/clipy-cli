@@ -41,7 +41,8 @@ class App extends React.Component {
   }
 
   componentDidMount () {
-    this.player = new Plyr(document.getElementById('player'));
+    this.player = new Plyr(document.getElementById('player'))
+    this.htmlEl = document.getElementsByTagName('html')[0]
   }
 
   selectVideo = (videoInFocus) => {
@@ -57,8 +58,7 @@ class App extends React.Component {
       ]
     }
 
-    const html = document.getElementsByTagName('html')[0]
-    html.scrollTop = 0
+    this.htmlEl.scrollTop = 0
   }
 
   render () {
@@ -66,14 +66,13 @@ class App extends React.Component {
     return (
       <div>
         <video id='player'>
-          <source type="video/mp4" />
+          <source type='video/mp4' />
         </video>
         <Info>
           <CoverImage src={DATA.coverImage}/>
           <div>{ DATA.title }</div> > 
           <div>{ videoInFocus.title }</div>
         </Info>
-        
         <ul>
           { DATA.videos.map(video => (
             <VideoItem
