@@ -5,6 +5,25 @@ const chalk = require('chalk')
 const path = require('path')
 const fileExtension = require('file-extension')
 
+function sortVideos ({ list, key }) {
+  const pattern = /([0-9])+/g
+
+  const map = (str) => {
+    const res = str.match(pattern)
+    if (res) {
+      return Number(res[0])
+    } else {
+      return 0
+    }
+  }
+
+  return list.sort((a,b) =>{
+    const av = map(a[key])
+    const bv = map(b[key])
+    
+    return av < bv ? -1 : av > bv ? 1 : 0
+  })
+}
 
 const run = () => {
   const proyectPath = process.cwd()
@@ -30,6 +49,11 @@ const run = () => {
       }
     })
 
+    DATA.videos = sortVideos({
+      list: DATA.videos,
+      key: 'title'
+    })
+
     const stringData = `<script>window.__CLIPY_DATA__ =${JSON.stringify(DATA)}</script>`
     const outdir = path.resolve(__dirname, 'app', 'dist', 'index.html')
     const outFile = path.resolve(proyectPath, 'play.html')
@@ -53,4 +77,3 @@ const run = () => {
 }
 
 run()
-
