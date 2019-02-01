@@ -1,10 +1,12 @@
 import React from 'react'
 import Plyr from 'plyr'
+import { ToastContainer, toast } from 'react-toastify'
 import { getItem, setItem } from './util/localstorage'
 import DATA from './util/getMetaData'
 import VideoItem from './components/VideoItem'
 import CoverImage from './components/CoverImage'
 import Info from './components/Info'
+import 'react-toastify/dist/ReactToastify.css'
 
 class App extends React.Component {
 
@@ -54,6 +56,16 @@ class App extends React.Component {
           ...cache.completed,
           state.videoInFocus.title
         ]
+      })
+
+      // Show Notification
+      toast.info(`🦄 ${state.videos[activeIndex].title}`, {
+        position: 'top-right',
+        autoClose: 7000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       })
   
       return {
@@ -165,6 +177,7 @@ class App extends React.Component {
             </VideoItem>
           )) }
         </ul>
+        <ToastContainer />
       </div>
     )
   }
