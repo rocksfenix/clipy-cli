@@ -4,6 +4,7 @@ const fs = require('fs')
 const chalk = require('chalk')
 const path = require('path')
 const fileExtension = require('file-extension')
+const openBrowser = require('react-dev-utils/openBrowser')
 
 function sortVideos ({ list, key }) {
   const pattern = /([0-9])+/g
@@ -68,9 +69,11 @@ const run = () => {
 
           console.log(
             chalk.green(`${proyectDefaultName} => Compiled successfully!
-              videos: ${DATA.videos.length}  
+              videos: ${DATA.videos.length}
             `)
-          );
+          )
+
+          openBrowser(outFile)
       })
     })
   })
