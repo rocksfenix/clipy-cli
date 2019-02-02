@@ -7,6 +7,7 @@
     "plyr": "^3.4.8",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-grid-system": "^4.4.2",
     "react-plyr": "^2.1.1",
     "react-toastify": "^4.5.2",
     "styled-components": "^4.1.3"

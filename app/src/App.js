@@ -4,7 +4,6 @@ import { ToastContainer, toast } from 'react-toastify'
 import { getItem, setItem } from './util/localstorage'
 import DATA from './util/getMetaData'
 import VideoItem from './components/VideoItem'
-import CoverImage from './components/CoverImage'
 import Info from './components/Info'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -154,16 +153,17 @@ class App extends React.Component {
 
   render () {
     const { videoInFocus, videos, coverImage, title } = this.state
+  
     return (
       <div>
         <video ref={this.video}>
           <source type='video/mp4' />
         </video>
-        <Info>
-          <CoverImage src={coverImage}/>
-          <div>{ title }</div> > 
-          <div>{ videoInFocus.title }</div>
-        </Info>
+        <Info
+          title={title}
+          videoInFocus={videoInFocus}
+          coverImage={coverImage}
+        />
         <ul>
           { videos.map((video, index) => (
             <VideoItem
