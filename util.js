@@ -20,7 +20,7 @@ const sortVideos = ({ list, key }) => {
 }
 
 const getStringData = (data) => {
-  return `<script>window.__CLIPY_DATA__ =${JSON.stringify(DATA)}</script>`
+  return `<script>window.__CLIPY_DATA__ =${JSON.stringify(data)}</script>`
 }
 
 module.exports = {

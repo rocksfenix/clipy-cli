@@ -5,32 +5,22 @@ const chalk = require('chalk')
 const path = require('path')
 const fileExtension = require('file-extension')
 const openBrowser = require('react-dev-utils/openBrowser')
-
-function sortVideos ({ list, key }) {
-  const pattern = /([0-9])+/g
-
-  const map = (str) => {
-    const res = str.match(pattern)
-    if (res) {
-      return Number(res[0])
-    } else {
-      return 0
-    }
-  }
-
-  return list.sort((a,b) =>{
-    const av = map(a[key])
-    const bv = map(b[key])
-    
-    return av < bv ? -1 : av > bv ? 1 : 0
-  })
-}
+const { sortVideos, getStringData } = require('./util')
 
 const run = () => {
   const proyectPath = process.cwd()
   const proyectDefaultName = path.basename(process.cwd())
 
   fs.readdir(proyectPath, (err, items) => {
+    if (err) {
+      console.log(
+        chalk.red(
+          `Failed read the directory: ${proyectPath}`
+        )
+      )
+      process.exit(1)
+    }
+  
     let DATA = {
       title: proyectDefaultName
     }
@@ -55,25 +45,35 @@ const run = () => {
       key: 'title'
     })
 
-    const stringData = `<script>window.__CLIPY_DATA__ =${JSON.stringify(DATA)}</script>`
+    const stringData = getStringData(DATA)
     const outdir = path.resolve(__dirname, 'app', 'dist', 'index.html')
     const outFile = path.resolve(proyectPath, 'play.html')
   
     fs.readFile(outdir, 'utf8', (err, contents) => {
-        const stringApp = contents.replace('{{{DATA HERE}}}', stringData)
+      if (err) {
+        console.log(
+          chalk.red(`Failed the template app`)
+        )
+        process.exit(1)
+      }
 
-        fs.writeFile(outFile, stringApp, (err) => {
-          if(err) {
-            return console.log(err)
-          }
+      const stringApp = contents.replace('{{{DATA HERE}}}', stringData)
 
+      fs.writeFile(outFile, stringApp, (err) => {
+        if(err) {
           console.log(
-            chalk.green(`${proyectDefaultName} => Compiled successfully!
-              videos: ${DATA.videos.length}
-            `)
+            chalk.red(`Failed the write play.html in ${proyectPath}`)
           )
+          process.exit(1)
+        }
 
-          openBrowser(outFile)
+        console.log(
+          chalk.green(`${proyectDefaultName} => Compiled successfully!
+            videos: ${DATA.videos.length}
+          `)
+        )
+
+        openBrowser(outFile)
       })
     })
   })
