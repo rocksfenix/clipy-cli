@@ -10,6 +10,7 @@
     "react-grid-system": "^4.4.2",
     "react-plyr": "^2.1.1",
     "react-toastify": "^4.5.2",
+    "react-toggle-button": "^2.2.0",
     "styled-components": "^4.1.3"
   },
   "devDependencies": {

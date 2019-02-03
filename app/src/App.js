@@ -14,7 +14,8 @@ class App extends React.Component {
     coverImage: DATA.coverImage,
     videos: DATA.videos,
     videoInFocus: DATA.videos[0],
-    activeIndex: 0
+    activeIndex: 0,
+    autoplay: false
   }
 
   video = React.createRef()
@@ -34,7 +35,7 @@ class App extends React.Component {
     }
 
     this.player = new Plyr(this.video.current)
-    this.player.autoplay = true
+    this.player.autoplay = this.state.autoplay
     this.player.source = source
     this.player.on('ended', this.handleEnded)
     this.htmlEl = document.getElementsByTagName('html')[0]
@@ -42,6 +43,9 @@ class App extends React.Component {
 
   handleEnded = (e) => {
     this.setState(state => {
+
+      if (!this.state.autoplay) return
+  
       const activeIndex = state.activeIndex + 1
       const cache = getItem(state.title)
 
@@ -151,8 +155,18 @@ class App extends React.Component {
     })
   }
 
+  handleAutoPLay = (autoplay) => {
+    this.player.autoplay = !autoplay
+    this.setState({ autoplay: !autoplay })
+
+    // Play the video when autoplay is true
+    if (!autoplay) {
+      this.player.play()
+    }
+  }
+
   render () {
-    const { videoInFocus, videos, coverImage, title } = this.state
+    const { videoInFocus, videos, coverImage, title, autoplay } = this.state
   
     return (
       <div>
@@ -163,6 +177,8 @@ class App extends React.Component {
           title={title}
           videoInFocus={videoInFocus}
           coverImage={coverImage}
+          autoplay={autoplay}
+          onToggleAutoPlay={this.handleAutoPLay}
         />
         <ul>
           { videos.map((video, index) => (

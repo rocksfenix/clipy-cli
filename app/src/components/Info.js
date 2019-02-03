@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import CoverImage from './CoverImage'
 import { Container, Row, Col } from 'react-grid-system'
 import getCleanTitle from '../util/getCleanTitle'
+import ToggleButton from 'react-toggle-button'
 
 const InfoBox = styled.div`
   height: 80px;
@@ -19,7 +20,7 @@ const VideoTitle = styled.div`
   font-weight: blod;
 `
 
-const Info = ({ title, videoInFocus, coverImage }) => {
+const Info = ({ title, videoInFocus, coverImage, autoplay, onToggleAutoPlay }) => {
 
   const cleanVideoTitle = getCleanTitle(videoInFocus.title) 
 
@@ -39,6 +40,9 @@ const Info = ({ title, videoInFocus, coverImage }) => {
             <Row xs={12}>
               <Playlist>
                 { title }
+                <ToggleButton
+                  value={autoplay}
+                  onToggle={onToggleAutoPlay} />
               </Playlist>
             </Row>
           </Col>
