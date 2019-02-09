@@ -10,12 +10,13 @@ import 'react-toastify/dist/ReactToastify.css'
 class App extends React.Component {
 
   state = {
-    title: DATA.title,
+    title: DATA.title || '',
     coverImage: DATA.coverImage,
     videos: DATA.videos,
     videoInFocus: DATA.videos[0],
     activeIndex: 0,
-    autoplay: false
+    autoplay: DATA.autoplay,
+    speed: DATA.speed
   }
 
   video = React.createRef()
@@ -37,8 +38,35 @@ class App extends React.Component {
     this.player = new Plyr(this.video.current)
     this.player.autoplay = this.state.autoplay
     this.player.source = source
-    this.player.on('ended', this.handleEnded)
+    this.player.settings = [ 'quality', 'speed', 'loop' ]
     this.htmlEl = document.getElementsByTagName('html')[0]
+    
+    this.player.speed = {
+      selected: this.state.speed,
+      options: [ 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2 ]
+    }
+
+    // Handle player events
+    this.player.on('ended', this.handleEnded)
+    this.player.on('ratechange', this.changeSpeed)
+    
+    // Autoplay
+    if (this.state.autoplay) {
+      this.player.play()
+    }
+  }
+
+  changeSpeed = (data) => {
+    // Update in cache state and cache
+    const speed = data.detail.plyr.config.speed.selected
+    const { title } = this.state
+    const cache = getItem(title)
+    
+    this.setState({ speed })
+    setItem(title, {
+      ...cache,
+      speed
+    })
   }
 
   handleEnded = (e) => {
@@ -158,6 +186,15 @@ class App extends React.Component {
   handleAutoPLay = (autoplay) => {
     this.player.autoplay = !autoplay
     this.setState({ autoplay: !autoplay })
+
+    const { title } = this.state
+    // Set autoplay in localStorage
+    const cache = getItem(title)
+
+    setItem(title, {
+      ...cache,
+      autoplay: !autoplay
+    })
 
     // Play the video when autoplay is true
     if (!autoplay) {
