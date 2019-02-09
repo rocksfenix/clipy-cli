@@ -1,6 +1,8 @@
 import React from 'react'
 import Plyr from 'plyr'
 import { ToastContainer, toast } from 'react-toastify'
+import { Helmet } from 'react-helmet'
+import Favicon from 'react-favicon'
 import { getItem, setItem } from './util/localstorage'
 import DATA from './util/getMetaData'
 import VideoItem from './components/VideoItem'
@@ -92,7 +94,7 @@ class App extends React.Component {
       // Show Notification
       toast.info(`🦄 ${state.videos[activeIndex].title}`, {
         position: 'top-right',
-        autoClose: 7000,
+        autoClose: 15000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -127,6 +129,11 @@ class App extends React.Component {
           size: 720
         }
       ]
+    }
+
+    this.player.speed = {
+      selected: this.state.speed,
+      options: [ 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 3, 3.5 ]
     }
   }
 
@@ -207,6 +214,13 @@ class App extends React.Component {
   
     return (
       <div>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>
+            {`${title} - ${videoInFocus.title}`}
+          </title>
+        </Helmet>
+        <Favicon url='https://res.cloudinary.com/tecninja-awesome/image/upload/v1549753557/Github/favicon.ico' />
         <video ref={this.video}>
           <source type='video/mp4' />
         </video>
