@@ -1,6 +1,6 @@
 
 const sortVideos = ({ list, key }) => {
-  const pattern = /([0-9])+/g
+  const pattern = /([0-9]|\.)+/
 
   const map = (str) => {
     const res = str.match(pattern)
