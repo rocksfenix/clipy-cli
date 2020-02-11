@@ -5,8 +5,8 @@
   "main": "poi.config.js",
   "dependencies": {
     "plyr": "^3.4.8",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-favicon": "0.0.14",
     "react-grid-system": "^4.4.2",
     "react-helmet": "^5.2.0",
